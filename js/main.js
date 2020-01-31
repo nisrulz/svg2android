@@ -511,10 +511,6 @@ function printPath(pathData, stylesArray, groupLevel, clipPath) {
         }
     }
 
-    //If fill is omitted use default black
-    if (typeof styles["fill"] === "undefined") {
-        styles["fill"] = "#000000";
-    }
 
     //Handle fill-rule
     if (typeof styles["fill-rule"] !== "undefined" && styles["fill-rule"].toLowerCase() == "evenodd") {
@@ -538,7 +534,12 @@ function printPath(pathData, stylesArray, groupLevel, clipPath) {
     if (!clipPath) {
         generatedOutput += INDENT.repeat(groupLevel + 1) + '<path\n';
         if (toBool(localStorage.useIdAsName)) generatedOutput += generateAttr('name', styles["id"], groupLevel, "");
-        generatedOutput += generateAttr('fillColor', parseColorToHex(styles["fill"]), groupLevel, "none");
+
+        //If fill is undefined, don't include it
+        if (typeof styles["fill"] === "undefined") {
+            generatedOutput += generateAttr('fillColor', parseColorToHex(styles["fill"]), groupLevel, "none");
+        }
+        
         generatedOutput += generateAttr('fillAlpha', styles["fill-opacity"], groupLevel, "1");
         generatedOutput += generateAttr('fillType', styles["fill-rule"], groupLevel, "nonZero");
         generatedOutput += generateAttr('strokeColor', parseColorToHex(styles["stroke"]), groupLevel, "none");
